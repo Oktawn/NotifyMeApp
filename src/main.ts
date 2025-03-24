@@ -1,12 +1,17 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { config } from './config/config';
+import express from 'express';
+import { appConfig } from './config/appConfig';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const port = config.get('PORT') || 3000;
-  await app.listen(port).then(() => {
-    console.log(`Server is running on http://localhost:${port}`);
-  });
-}
-bootstrap();
+const app = express();
+const port = appConfig.get("PORT");
+
+app.use(express.json());
+
+// Basic route
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
