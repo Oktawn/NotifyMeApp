@@ -4,10 +4,16 @@
   "description": "",
   "private": true,
   "license": "ISC",
+  "nodemonConfig":{
+    "watch": ["src"],
+    "ext": "ts",
+    "ignore": ["src/**/*.spec.ts"],
+    "exec": "ts-node ./src/main.ts"
+  },
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "nodemon",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/main.js"
   },
   "dependencies": {
     "axios": "^1.8.4",
@@ -27,6 +33,7 @@
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.13",
+    "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   }

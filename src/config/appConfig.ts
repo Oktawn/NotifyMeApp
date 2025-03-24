@@ -14,7 +14,8 @@ class AppConfig {
   constructor() {
     const envDev = path.resolve(__dirname, "../../.env.development");
     const envProd = path.resolve(__dirname, "../../.env.production");
-    const env = process.env.NODE_ENV === "production" ? envProd : envDev;
+    const envTest = path.resolve(__dirname, "../../.env");
+    const env = envTest;
     const { error, parsed } = config({ path: env });
     if (error) {
       throw new Error(`Error loading .env file: ${error}`);
