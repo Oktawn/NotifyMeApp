@@ -8,6 +8,7 @@ interface IAppConfig {
   DB_NAME: string;
   DB_PORT: number;
   DB_EXTERNAL_PORT: number;
+  JWT_SECRET: string;
 }
 
 class AppConfig {

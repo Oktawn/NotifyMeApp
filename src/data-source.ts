@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import { appConfig } from "./config/appConfig";
+import { appConfig } from "./config/app.config";
 import "reflect-metadata";
 
 export const dataSource = new DataSource({
@@ -10,4 +10,7 @@ export const dataSource = new DataSource({
   database: appConfig.get("DB_NAME"),
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: true,
+  cache: {
+    duration: 10000
+  },
 });
