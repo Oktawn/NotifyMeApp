@@ -4,14 +4,15 @@ import { UsersEntity } from "../entities/Users.entity";
 import { appConfig } from "../config/app.config";
 import { sign, verify } from "jsonwebtoken";
 import { RefreshTokensEntity } from "../entities/RefreshTokens.entity";
-import { LoginType, RegisterType } from "../types/types";
+import { LoginDTO, RegisterDTO } from "../commons/DTO/auth.dto";
+import moment from "moment";
 
 const userRepo = dataSource.getRepository(UsersEntity);
 const tokensRepo = dataSource.getRepository(RefreshTokensEntity);
 const secret = appConfig.get("JWT_SECRET");
 
 export class AuthService {
-  async register(body: RegisterType) {
+  async register(body: RegisterDTO) {
     const { email, password, username } = body;
     const user = await userRepo.findOneBy({ email });
     if (user) {
@@ -24,9 +25,10 @@ export class AuthService {
       password: hashPass
     });
     userRepo.save(newUser);
+    return "User registered successfully";
   };
 
-  async login(body: LoginType) {
+  async login(body: LoginDTO) {
     const { email, password } = body;
     const user = await userRepo.findOneBy({ email: email });
     if (!user) {
@@ -36,7 +38,7 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new Error("Invalid credentials");
     }
-    const tokens = this.generateTokens(user.id);
+    const tokens = await this.generateTokens(user.id);
     return {
       "accessToken": tokens.accessToken,
       "refreshToken": tokens.refreshToken
@@ -49,16 +51,21 @@ export class AuthService {
 
   async generateRefreshToken(userId: string) {
     const token = sign({ userId }, secret, { expiresIn: "7d" });
-    const isTokenExists = await tokensRepo.findOneBy({ user: { id: userId } });
+    const isTokenExists = await tokensRepo.findOne({ where: { user: { id: userId } }, relations: ['user'] });
     if (isTokenExists) {
       await tokensRepo.delete({ user: { id: userId } });
     }
-    tokensRepo.save({ token, user: { id: userId } });
+    const t = tokensRepo.create({
+      token,
+      user: { id: userId },
+      expires_at: moment().add(7, 'days')
+    });
+    tokensRepo.save(t);
     return token;
   }
 
   async updateRefreshToken(token: string) {
-    const refreshToken = await tokensRepo.findOneBy({ token: token });
+    const refreshToken = await tokensRepo.findOne({ where: { token: token }, relations: ["user"] });
     if (!refreshToken) {
       throw new Error("Invalid token");
     }
@@ -70,9 +77,9 @@ export class AuthService {
     return sign({ userId }, secret, { expiresIn: "15m" });
   }
 
-  private generateTokens(userId: string) {
+  private async generateTokens(userId: string) {
     const accessToken = this.generateAccessToken(userId);
-    const refreshToken = this.generateRefreshToken(userId).then((token) => token);
+    const refreshToken = await this.generateRefreshToken(userId);
     return {
       accessToken, refreshToken
     };

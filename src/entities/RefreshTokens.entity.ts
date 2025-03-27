@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, Timestamp } from "typeorm";
 import { UsersEntity } from "./Users.entity";
 
 @Entity("refresh_tokens")
@@ -11,6 +11,6 @@ export class RefreshTokensEntity {
   @JoinColumn()
   user: UsersEntity;
 
-  @Column()
-  expires_at: Date;
+  @Column({ type: "timestamp" })
+  expires_at: Timestamp;
 }

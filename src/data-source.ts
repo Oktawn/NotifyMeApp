@@ -9,7 +9,7 @@ export const dataSource = new DataSource({
   password: appConfig.get("DB_PASSWORD"),
   database: appConfig.get("DB_NAME"),
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  synchronize: true,
+  synchronize: false,
   cache: {
     duration: 10000
   },
