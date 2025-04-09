@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("title").notNullable();
     table.string("description").nullable();
     table.enum("status", Object.values(enumStatusTasks)).defaultTo(enumStatusTasks.OPEN);
-    table.date("remainderTime").nullable();
+    table.date("deadline").nullable();
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
     table.uuid("userId").references("id").inTable("users").onDelete("CASCADE");

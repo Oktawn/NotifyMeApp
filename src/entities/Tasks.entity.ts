@@ -17,7 +17,7 @@ export class TasksEntity {
   status: string;
 
   @Column({ nullable: true })
-  remainderTime: Date;
+  deadline: Date;
 
   @CreateDateColumn()
   created_at: Timestamp;
