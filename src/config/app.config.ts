@@ -2,7 +2,8 @@ import { config } from "dotenv";
 import path from "node:path";
 
 interface IAppConfig {
-  PORT: number;
+  API_PORT: number;
+  DB_HOST: string;
   DB_USER: string;
   DB_PASSWORD: string;
   DB_NAME: string;

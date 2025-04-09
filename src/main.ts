@@ -7,7 +7,7 @@ import { tasksController } from './tasks/tasks.controller';
 import { authMiddleware } from './auth/auth.middleware';
 
 const app = express();
-const port = appConfig.get("PORT");
+const port = appConfig.get("API_PORT");
 
 app.use(express.json());
 
